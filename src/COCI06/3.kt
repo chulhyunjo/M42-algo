@@ -1,3 +1,5 @@
+/** https://dmoj.ca/problem/coci06c1p3 */
+
 fun main() {
     val word = readLine()?: throw Throwable("invalid input")
     val l = word.length

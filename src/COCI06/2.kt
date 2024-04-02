@@ -1,3 +1,5 @@
+/** https://dmoj.ca/problem/coci06c1p2 */
+
 package COCI06
 
 import kotlin.math.*
