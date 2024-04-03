@@ -1,5 +1,12 @@
+/** https://dmoj.ca/problem/coci06c1p4 */
+
+/** 너비 우선 탐색을 통해 물, 사람을 상하좌우 한칸씩 매번 이동시켜 탐색한다.
+ *  한번 탐색한 공간은 다시 확인할 필요가 없다. 최소 시간을 확인하므로
+ *
+ * */
+
 fun main() {
-    fun moveWater(arr:MutableList<CharArray>, visited:Array<Array<Int>>,position: ArrayDeque<Pair<Int, Int>>, R: Int, C: Int, time: Int): ArrayDeque<Pair<Int,Int>> {
+    fun moveWater(arr:MutableList<CharArray>,position: ArrayDeque<Pair<Int, Int>>, R: Int, C: Int): ArrayDeque<Pair<Int,Int>> {
         val dx = listOf(0, 0, 1, -1) // 동 서 남 북
         val dy = listOf(1, -1, 0, 0) // 동 서 남 북
         val nextPosition = ArrayDeque<Pair<Int, Int>>()
@@ -8,8 +15,8 @@ fun main() {
             for (i in 0..3) {
                 val nx = x + dx[i]
                 val ny = y + dy[i]
-                if (nx in 0..<R && ny in 0..<C && arr[nx][ny] != 'X' && arr[nx][ny] != 'D' && visited[nx][ny] == 0) {
-                    visited[nx][ny] = time
+                if (nx in 0..<R && ny in 0..<C && arr[nx][ny] != 'X' && arr[nx][ny] != 'D' && arr[nx][ny] != '*') {
+                    arr[nx][ny] = '*'
                     nextPosition.add(Pair(nx, ny))
                 }
             }
@@ -17,7 +24,7 @@ fun main() {
         return nextPosition
     }
 
-    fun move(arr:MutableList<CharArray>, visited:Array<Array<Int>>,position: ArrayDeque<Pair<Int, Int>>, R: Int, C: Int, time: Int): ArrayDeque<Pair<Int,Int>>{
+    fun move(arr:MutableList<CharArray>,position: ArrayDeque<Pair<Int, Int>>, R: Int, C: Int, time: Int): ArrayDeque<Pair<Int,Int>>{
         val dx = listOf(0, 0, 1, -1) // 동 서 남 북
         val dy = listOf(1, -1, 0, 0) // 동 서 남 북
         val nextPosition = ArrayDeque<Pair<Int,Int>>()
@@ -26,9 +33,9 @@ fun main() {
             for (i in 0..3){
                 val nx = x + dx[i]
                 val ny = y + dy[i]
-                if(nx in 0..<R && ny in 0..<C && visited[nx][ny] == 0){
+                if(nx in 0..<R && ny in 0..<C){
                     if(arr[nx][ny] == 'D') {
-                        visited[nx][ny] = time
+                        arr[nx][ny] = time.toChar()
                         return ArrayDeque()
                     } else if(arr[nx][ny] == '.'){
                         arr[nx][ny] = 'S'
@@ -40,13 +47,11 @@ fun main() {
         return nextPosition
     }
 
-    val (R, C) = readlnOrNull()?.split(" ")?.map{it.toInt()} ?: throw Throwable("invalid input")
+    val (R: Int, C: Int) = readlnOrNull()?.split(" ")?.map{it.toInt()} ?: throw Throwable("invalid input")
 
-    var dPosition = Pair(0, 0) // Beaver Den
+    val arr :MutableList<CharArray> = mutableListOf() // 지도
 
-    val arr :MutableList<CharArray> = mutableListOf()
-    val visited = Array(R) {Array(C) { 0 }}
-
+    var dPosition = Pair(0, 0) // Beaver Den 도착점 좌표
     var floodWater = ArrayDeque<Pair<Int, Int>>()
     var painterHedgehogs = ArrayDeque<Pair<Int,Int>>()
 
@@ -59,7 +64,6 @@ fun main() {
                 dPosition = Pair(i, j)
             }else if(arr[i][j] == '*'){
                 floodWater.add(Pair(i, j))
-                visited[i][j] = 1
             }else if(arr[i][j] == 'S'){
                 painterHedgehogs.add(Pair(i, j))
             }
@@ -68,10 +72,10 @@ fun main() {
 
     var time = 1
     while (painterHedgehogs.size>0){
-        floodWater = moveWater(arr, visited, floodWater, R, C, time)
-        painterHedgehogs = move(arr, visited, painterHedgehogs, R, C, time)
+        floodWater = moveWater(arr, floodWater, R, C)
+        painterHedgehogs = move(arr, painterHedgehogs, R, C, time)
         time++
     }
-    val answer = visited[dPosition.first][dPosition.second]
-    println(if(answer == 0) "KAKTUS" else answer)
+    val answer = arr[dPosition.first][dPosition.second]
+    println(if(answer == 'D') "KAKTUS" else answer.code)
 }

@@ -1,3 +1,4 @@
+/** https://dmoj.ca/problem/coci06c1p5 */
 import kotlin.math.max
 
 fun main() {

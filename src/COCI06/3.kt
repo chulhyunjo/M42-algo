@@ -7,7 +7,7 @@ fun main() {
 
     for (i in (1..l)){
         val pattern = if(i%3 == 0) '*' else '#'
-        val start = (i-1) * 4 + 2
+        val start = (i-1) * 4 + 2 // 맨위에 줄 시작 인덱스
         arr[0][start] = pattern
         for (j in (1..2)){
             if(arr[j][start-j] != '*') arr[j][start-j] = pattern
